@@ -64,6 +64,12 @@ namespace ds
 				// Link nodes together
 				node->m_next = nodeToAdd;
 				nodeToAdd->m_prev = node;
+
+				// Update head if necessary
+				if (node == m_tail)
+				{
+					m_tail = nodeToAdd;
+				}
 			}
 			// If not, we consider the list is empty
 			else
@@ -93,8 +99,14 @@ namespace ds
 				// Link nodes together
 				node->m_prev = nodeToAdd;
 				nodeToAdd->m_next = node;
+
+				// Update head if necessary
+				if (node == m_head)
+				{
+					m_head = nodeToAdd;
+				}
 			}
-			// If not, we consider the list is empty
+			// The list is empty
 			else
 			{
 				// Update tail and head
@@ -116,7 +128,6 @@ namespace ds
 			
 			// Add new node after tail
 			addAfter(m_tail, node);
-			m_tail = node;
 		}
 
 		void addFront(const T& object)
@@ -126,7 +137,11 @@ namespace ds
 
 			// Add the new node before head
 			addBefore(m_head, node);
-			m_head = node;
+		}
+
+		void remove(ListNode<T>* node)
+		{
+
 		}
 
 	private:
