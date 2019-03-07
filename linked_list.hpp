@@ -1,12 +1,13 @@
 #pragma once
 
+template<typename T> class List;
+
 namespace ds
 {
 	template<typename T>
 	class ListNode
 	{
 	public:
-
 		friend class List<T>;
 
 		ListNode() :
@@ -124,7 +125,7 @@ namespace ds
 		void addBack(const T& object)
 		{
 			// Create new node
-			ListNode<T>* node = new ListNode(object);
+			ListNode<T>* node = new ListNode<T>(object);
 			
 			// Add new node after tail
 			addAfter(m_tail, node);

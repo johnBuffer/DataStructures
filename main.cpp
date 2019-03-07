@@ -3,7 +3,9 @@
 
 int main()
 {
-	//List<int> list;
+	ds::List<int> list;
+
+	list.addBack(78);
 
 	return 0;
 }
