@@ -7,5 +7,12 @@ int main()
 
 	list.addBack(78);
 
+	ds::ListIterator<int> it = list.begin();
+
+	while (it.next())
+	{
+
+	}
+
 	return 0;
 }

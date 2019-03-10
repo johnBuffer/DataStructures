@@ -1,14 +1,17 @@
 #pragma once
 
-template<typename T> class List;
 
 namespace ds
 {
+	template<typename T> class List;
+	template<typename T> class ListIterator;
+
 	template<typename T>
 	class ListNode
 	{
 	public:
 		friend class List<T>;
+		friend class ListIterator<T>;
 
 		ListNode() :
 			T(),
@@ -30,6 +33,11 @@ namespace ds
 			m_next(nullptr)
 		{}
 
+		~ListNode()
+		{
+
+		}
+
 		// Get ref to the node's object
 		T& operator*()
 		{
@@ -42,10 +50,49 @@ namespace ds
 		ListNode<T>* m_next;
 	};
 
+
+	template<typename T>
+	class ListIterator
+	{
+	public:
+		ListIterator() :
+			m_current_node(nullptr),
+			m_head(nullptr)
+		{}
+
+		ListIterator(ListNode<T>* head) :
+			m_current_node(nullptr),
+			m_head(head)
+		{}
+
+		bool operator()()
+		{
+			return m_current_node;
+		}
+
+		bool next()
+		{
+			m_current_node = m_current_node ? m_current_node->m_next : m_head;
+
+			return m_current_node;
+		}
+
+		T& operator*()
+		{
+			return *m_current_node;
+		}
+
+	private:
+		ListNode<T>* m_current_node;
+		ListNode<T>* m_head;
+	};
+
 	template<typename T>
 	class List
 	{
 	public:
+		friend ListIterator<T>;
+
 		List() :
 			m_head(nullptr)
 		{}
@@ -142,7 +189,41 @@ namespace ds
 
 		void remove(ListNode<T>* node)
 		{
+			if (!node)
+				return;
 
+			if (node == m_head)
+			{
+				m_head = node->m_next;
+				if (m_head)
+					m_head->m_next = nullptr;
+			}
+			else if (node == m_tail)
+			{
+				m_tail = node->m_prev;
+				if (m_tail)
+					m_tail->m_prev;
+			}
+			else
+			{
+				node->m_next->m_prev = node->m_prev;
+				node->m_prev->m_next = node->m_next;
+			}
+
+			delete(node);
+		}
+
+		ListNode<T>* getNext(ListNode<T>* node)
+		{
+			if (!node)
+				return m_head;
+
+			return node->m_next;
+		}
+
+		ListIterator<T> begin()
+		{
+			return ListIterator<T>(m_head);
 		}
 
 	private:
