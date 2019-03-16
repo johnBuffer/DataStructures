@@ -55,6 +55,8 @@ namespace ds
 	class ListIterator
 	{
 	public:
+		friend class List<T>;
+
 		ListIterator() :
 			m_current_node(nullptr),
 			m_head(nullptr)
@@ -65,21 +67,29 @@ namespace ds
 			m_head(head)
 		{}
 
-		bool operator()()
+		ListNode<T>* next()
 		{
+			if (m_current_node)
+				m_current_node = m_current_node->m_next;
+			else
+				m_current_node = m_head;
+
 			return m_current_node;
 		}
 
-		bool next()
+		ListNode<T>* prev()
 		{
-			m_current_node = m_current_node ? m_current_node->m_next : m_head;
+			if (m_current_node)
+				m_current_node = m_current_node->m_prev;
+			else
+				m_current_node = m_head;
 
 			return m_current_node;
 		}
 
 		T& operator*()
 		{
-			return *m_current_node;
+			return *(*m_current_node);
 		}
 
 	private:
@@ -94,11 +104,13 @@ namespace ds
 		friend ListIterator<T>;
 
 		List() :
-			m_head(nullptr)
+			m_head(nullptr),
+			m_tail(nullptr)
 		{}
 
 		void addAfter(ListNode<T>* node, ListNode<T>* nodeToAdd)
 		{
+			std::cout << "add" << std::endl;
 			// If node exists
 			if (node)
 			{
@@ -107,7 +119,7 @@ namespace ds
 				{
 					node->m_next->m_prev = nodeToAdd;
 				}
-				nodeToAdd->m_next = node->m_prev;
+				nodeToAdd->m_next = node->m_next;
 
 				// Link nodes together
 				node->m_next = nodeToAdd;
@@ -116,19 +128,21 @@ namespace ds
 				// Update head if necessary
 				if (node == m_tail)
 				{
+					std::cout << "up" << std::endl;
 					m_tail = nodeToAdd;
 				}
 			}
 			// If not, we consider the list is empty
 			else
 			{
+				std::cout << "no node" << std::endl;
 				// Update tail and head
-				m_tail = node;
-				m_head = node;
+				m_tail = nodeToAdd;
+				m_head = nodeToAdd;
 
 				// Reset prev and next
-				node->m_next = nullptr;
-				node->m_prev = nullptr;
+				nodeToAdd->m_next = nullptr;
+				nodeToAdd->m_prev = nullptr;
 			}
 		}
 
@@ -158,12 +172,12 @@ namespace ds
 			else
 			{
 				// Update tail and head
-				m_tail = node;
-				m_head = node;
+				m_tail = nodeToAdd;
+				m_head = nodeToAdd;
 
 				// Reset prev and next
-				node->m_next = nullptr;
-				node->m_prev = nullptr;
+				nodeToAdd->m_next = nullptr;
+				nodeToAdd->m_prev = nullptr;
 			}
 		}
 
@@ -211,6 +225,14 @@ namespace ds
 			}
 
 			delete(node);
+		}
+
+		void remove(ListIterator<T>& it)
+		{
+			ListNode<T>* node = it.m_current_node;
+			it.prev();
+			remove(node);
+			it.m_head = m_head;
 		}
 
 		ListNode<T>* getNext(ListNode<T>* node)
